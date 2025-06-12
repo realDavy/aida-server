@@ -17,9 +17,13 @@ sudo apt install -y wget curl git vim unzip build-essential
 ### 1.2 配置防火墙
 
 sudo ufw allow 8084/tcp    # 后端服务端口
+
 sudo ufw allow 3306/tcp    # MySQL数据库端口
+
 sudo ufw enable            # 启用防火墙
+
 sudo ufw status            # 验证端口开放状态
+
 
 3. 获取项目代码
 #可以从github拉不下来 可以用gitee
@@ -28,40 +32,65 @@ git clone https://github.com/realDvy/aida-server.git
 
 git clone https://gitee.com/joey-zhou/xiaozhi-esp32-server-java.git
 三、核心服务安装
+
 1. MySQL 5.7安装
+2. 
 # 添加MySQL官方仓库
 wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+
 sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+
  
 # 安装时选择5.7版本（在交互界面中选择）
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
+
 sudo apt update
+
 sudo apt install -y mysql-server=5.7.* mysql-client=5.7.*
+
  
 # 启动服务
 sudo systemctl start mysql
+
 sudo systemctl enable mysql
+
 2. Maven安装
+   
 sudo apt install -y maven
+
 mvn -v  # 验证版本（需显示3.6+）
-3. Node.js 16安装
+
+4. Node.js 16安装
+   
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+
 sudo apt install -y nodejs
+
 node -v && npm -v  # 验证版本（需显示v16.x）
-4. FFmpeg安装
+
+6. FFmpeg安装
+   
 sudo apt install -y ffmpeg
+
 ffmpeg -version  # 验证安装
+
 四、数据库配置
+
 1. 创建数据库用户
+   
 -- 登录MySQL
+
 mysql -u root -p
+
 -- 执行以下SQL命令
+
 CREATE DATABASE xiaozhi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'xiaozhi'@'localhost' IDENTIFIED BY 'Happy@2025';
 GRANT ALL PRIVILEGES ON xiaozhi.* TO 'xiaozhi'@'localhost';
 FLUSH PRIVILEGES;
+
 exit;
-2. 导入初始化数据
+3. 导入初始化数据
 cd xiaozhi-esp32-server-java
 mysql -u root -p xiaozhi < db/init.sql  # 输入root密码
 五、语音模型部署
