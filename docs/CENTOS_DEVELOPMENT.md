@@ -38,11 +38,25 @@ git clone https://gitee.com/joey-zhou/xiaozhi-esp32-server-java.git
 三、核心服务安装
 
 1. MySQL 5.7安装
-2. 
-# 添加MySQL官方仓库
-wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
 
-sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+# 添加 MySQL 官方 APT 源
+1.下载并安装 MySQL APT 配置工具
+运行以下命令下载并安装 MySQL 的 APT 配置工具：
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.24-1_all.deb
+sudo dpkg -i mysql-apt-config_0.8.24-1_all.deb
+2.选择 MySQL 版本
+安装过程中会弹出一个配置界面，要求选择 MySQL 版本。请按以下步骤操作：
+
+使用方向键选择 MySQL Server & Cluster，然后按回车。
+在子菜单中选择 mysql-5.7。
+返回主菜单后，选择 OK 并按回车保存配置。
+3. 更新 APT 缓存
+完成配置后，更新 APT 缓存以加载新的 MySQL 源：
+sudo apt update
+
+4.安装 MySQL 5.7
+运行以下命令安装 MySQL 5.7 的服务器和客户端：
+sudo apt install -y mysql-server=5.7.* mysql-client=5.7.*
 
  
 # 安装时选择5.7版本（在交互界面中选择）
