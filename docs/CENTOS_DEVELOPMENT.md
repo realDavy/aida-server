@@ -35,6 +35,7 @@ sudo ufw status            # 验证端口开放状态
 git clone https://github.com/realDvy/aida-server.git
 
 git clone https://gitee.com/joey-zhou/xiaozhi-esp32-server-java.git
+
 三、核心服务安装
 
 1. MySQL 5.7安装
