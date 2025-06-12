@@ -14,6 +14,7 @@
 ### 1.1 安装基础工具
 
 sudo apt update
+
 sudo apt install -y wget curl git vim unzip build-essential
 
 
