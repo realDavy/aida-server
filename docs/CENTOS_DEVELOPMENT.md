@@ -17,6 +17,28 @@ sudo apt update
 
 sudo apt install -y wget curl git vim unzip build-essential
 
+安装支持 Java 21 的 JDK
+
+sudo apt install openjdk-21-jdk
+配置 Maven 使用正确的 JDK
+
+即使安装了 JDK 21，Maven 可能仍然使用旧版本的 JDK。您可以通过以下方式确保 Maven 使用正确的 JDK：
+
+设置 JAVA_HOME
+
+编辑 ~/.bashrc 文件，添加或更新 JAVA_HOME 环境变量：
+
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+然后使配置生效：
+
+source ~/.bashrc
+
+验证 JAVA_HOME 是否正确：
+
+echo $JAVA_HOME
 
 ### 1.2 配置防火墙
 
