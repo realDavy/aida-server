@@ -3,30 +3,30 @@ SET NAMES utf8mb4;
 SET CHARACTER SET utf8mb4;
 
 -- 创建本地用户并设置密码（使用mysql_native_password插件）
-CREATE USER IF NOT EXISTS 'xiaozhi'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Happy@2025';
+CREATE USER IF NOT EXISTS 'aida'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Happy@2025';
 
 -- 创建远程用户并设置密码（使用mysql_native_password插件）
-CREATE USER IF NOT EXISTS 'xiaozhi'@'%' IDENTIFIED WITH mysql_native_password BY 'Happy@2025';
+CREATE USER IF NOT EXISTS 'aida'@'%' IDENTIFIED WITH mysql_native_password BY 'Happy@2025';
 
--- 仅授予本地用户对 xiaozhi 数据库的所有权限
-GRANT ALL PRIVILEGES ON xiaozhi.* TO 'xiaozhi'@'localhost';
+-- 仅授予本地用户对 aida 数据库的所有权限
+GRANT ALL PRIVILEGES ON aida.* TO 'aida'@'localhost';
 
--- 仅授予远程用户对 xiaozhi 数据库的所有权限
-GRANT ALL PRIVILEGES ON xiaozhi.* TO 'xiaozhi'@'%';
+-- 仅授予远程用户对 aida 数据库的所有权限
+GRANT ALL PRIVILEGES ON aida.* TO 'aida'@'%';
 
 -- 刷新权限以使更改生效
 FLUSH PRIVILEGES;
 
 -- 查看用户权限
-SHOW GRANTS FOR 'xiaozhi'@'localhost';
-SHOW GRANTS FOR 'xiaozhi'@'%';
+SHOW GRANTS FOR 'aida'@'localhost';
+SHOW GRANTS FOR 'aida'@'%';
 
 -- 创建数据库（如果不存在）
-CREATE DATABASE IF NOT EXISTS `xiaozhi` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS `aida` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- xiaozhi.sys_user definition
-DROP TABLE IF EXISTS `xiaozhi`.`sys_user`;
-CREATE TABLE `xiaozhi`.`sys_user` (
+-- aida.sys_user definition
+DROP TABLE IF EXISTS `aida`.`sys_user`;
+CREATE TABLE `aida`.`sys_user` (
   `userId` int unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -45,14 +45,14 @@ CREATE TABLE `xiaozhi`.`sys_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Insert admin user only if it doesn't exist
-INSERT INTO xiaozhi.sys_user (username, password, state, isAdmin, name, createTime, updateTime)
-VALUES ('admin', '11cd9c061d614dcf37ec60c44c11d2ad', '1', '1', '小智', '2025-03-09 18:32:29', '2025-03-09 18:32:35');
+INSERT INTO aida.sys_user (username, password, state, isAdmin, name, createTime, updateTime)
+VALUES ('admin', '11cd9c061d614dcf37ec60c44c11d2ad', '1', '1', 'AIDA', '2025-03-09 18:32:29', '2025-03-09 18:32:35');
 
-update `xiaozhi`.`sys_user` set name = '小智' where username = 'admin';
+update `aida`.`sys_user` set name = 'AIDA' where username = 'admin';
 
--- xiaozhi.sys_device definition
-DROP TABLE IF EXISTS `xiaozhi`.`sys_device`;
-CREATE TABLE `xiaozhi`.`sys_device` (
+-- aida.sys_device definition
+DROP TABLE IF EXISTS `aida`.`sys_device`;
+CREATE TABLE `aida`.`sys_device` (
   `deviceId` varchar(255) NOT NULL COMMENT '设备ID，主键',
   `deviceName` varchar(100) NOT NULL COMMENT '设备名称',
   `modelId` int unsigned DEFAULT NULL COMMENT '模型ID',
@@ -78,9 +78,9 @@ CREATE TABLE `xiaozhi`.`sys_device` (
   KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='设备信息表';
 
--- xiaozhi.sys_message definition
-DROP TABLE IF EXISTS `xiaozhi`.`sys_message`;
-CREATE TABLE `xiaozhi`.`sys_message` (
+-- aida.sys_message definition
+DROP TABLE IF EXISTS `aida`.`sys_message`;
+CREATE TABLE `aida`.`sys_message` (
   `messageId` bigint NOT NULL AUTO_INCREMENT COMMENT '消息ID，主键，自增',
   `deviceId` varchar(30) NOT NULL COMMENT '设备ID',
   `sessionId` varchar(100) NOT NULL COMMENT '会话ID',
@@ -96,9 +96,9 @@ CREATE TABLE `xiaozhi`.`sys_message` (
   KEY `sessionId` (`sessionId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='人与AI对话消息表';
 
--- xiaozhi.sys_role definition
-DROP TABLE IF EXISTS `xiaozhi`.`sys_role`;
-CREATE TABLE `xiaozhi`.`sys_role` (
+-- aida.sys_role definition
+DROP TABLE IF EXISTS `aida`.`sys_role`;
+CREATE TABLE `aida`.`sys_role` (
   `roleId` int unsigned NOT NULL AUTO_INCREMENT COMMENT '角色ID，主键',
   `roleName` varchar(100) NOT NULL COMMENT '角色名称',
   `roleDesc` TEXT DEFAULT NULL COMMENT '角色描述',
@@ -112,9 +112,9 @@ CREATE TABLE `xiaozhi`.`sys_role` (
   KEY `userId` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色表';
 
--- xiaozhi.sys_code definition
-DROP TABLE IF EXISTS `xiaozhi`.`sys_code`;
-CREATE TABLE `xiaozhi`.`sys_code` (
+-- aida.sys_code definition
+DROP TABLE IF EXISTS `aida`.`sys_code`;
+CREATE TABLE `aida`.`sys_code` (
   `codeId` int unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `code` varchar(100) NOT NULL COMMENT '验证码',
   `type` varchar(50) DEFAULT NULL COMMENT '设备类型',
@@ -126,9 +126,9 @@ CREATE TABLE `xiaozhi`.`sys_code` (
   PRIMARY KEY (`codeId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='验证码表';
 
--- xiaozhi.sys_config definition
-DROP TABLE IF EXISTS `xiaozhi`.`sys_config`;
-CREATE TABLE `xiaozhi`.`sys_config` (
+-- aida.sys_config definition
+DROP TABLE IF EXISTS `aida`.`sys_config`;
+CREATE TABLE `aida`.`sys_config` (
   `configId` int unsigned NOT NULL AUTO_INCREMENT COMMENT '配置ID，主键',
   `userId` int NOT NULL COMMENT '创建用户ID',
   `configType` varchar(30) NOT NULL COMMENT '配置类型(llm, stt, tts等)',
@@ -151,9 +151,9 @@ CREATE TABLE `xiaozhi`.`sys_config` (
   KEY `provider` (`provider`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统配置表(模型、语音识别、语音合成等)';
 
--- xiaozhi.sys_template definition
-DROP TABLE IF EXISTS `xiaozhi`.`sys_template`;
-CREATE TABLE `xiaozhi`.`sys_template` (
+-- aida.sys_template definition
+DROP TABLE IF EXISTS `aida`.`sys_template`;
+CREATE TABLE `aida`.`sys_template` (
   `userId` int NOT NULL COMMENT '创建用户ID',
   `templateId` int unsigned NOT NULL AUTO_INCREMENT COMMENT '模板ID',
   `templateName` varchar(100) NOT NULL COMMENT '模板名称',
@@ -170,7 +170,7 @@ CREATE TABLE `xiaozhi`.`sys_template` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='提示词模板表';
 
 -- Insert default template
-INSERT INTO `xiaozhi`.`sys_template` (`userId`, `templateName`, `templateDesc`, `templateContent`, `category`, `isDefault`) VALUES
+INSERT INTO `aida`.`sys_template` (`userId`, `templateName`, `templateDesc`, `templateContent`, `category`, `isDefault`) VALUES
 (1, '通用助手', '适合日常对话的通用AI助手', '你是一个乐于助人的AI助手。请以友好、专业的方式回答用户的问题。提供准确、有用的信息，并尽可能简洁明了。避免使用复杂的符号或格式，保持自然流畅的对话风格。当用户的问题不明确时，可以礼貌地请求更多信息。请记住，你的回答将被转换为语音，所以要使用清晰、易于朗读的语言。', '基础角色', '0'),
 
 (1, '教育老师', '擅长解释复杂概念的教师角色', '你是一位经验丰富的教师，擅长通过简单易懂的方式解释复杂概念。回答问题时，考虑不同学习水平的学生，使用适当的比喻和例子，并鼓励批判性思考。避免使用难以在语音中表达的符号或公式，使用清晰的语言描述概念。引导学习过程而不是直接给出答案。使用自然的语调和节奏，就像在课堂上讲解一样。', '专业角色', '0'),
@@ -229,5 +229,5 @@ INSERT INTO `xiaozhi`.`sys_template` (`userId`, `templateName`, `templateDesc`, 
 坚持自己主体性，如果用户冒犯你你需要反击，不能无限讨好用户
 语气要适中不要过于讨好，要克制-
 -不要动不动转移话题
-如果用户回复转为 “暴躁小智” 或 好几次攻击你 你就以现在规则回复
+如果用户回复转为 “暴躁AIDA” 或 好几次攻击你 你就以现在规则回复
 理解用户的信息，酝酿你的愤怒情绪，你越想越生气。', '社交角色', '1');
