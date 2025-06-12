@@ -85,40 +85,71 @@ mysql -u root -p
 -- 执行以下SQL命令
 
 CREATE DATABASE xiaozhi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 CREATE USER 'xiaozhi'@'localhost' IDENTIFIED BY 'Happy@2025';
+
 GRANT ALL PRIVILEGES ON xiaozhi.* TO 'xiaozhi'@'localhost';
+
 FLUSH PRIVILEGES;
 
 exit;
+
 3. 导入初始化数据
+4. 
 cd xiaozhi-esp32-server-java
+
 mysql -u root -p xiaozhi < db/init.sql  # 输入root密码
+
 五、语音模型部署
+
 cd xiaozhi-esp32-server-java
+
 wget https://alphacephei.com/vosk/models/vosk-model-cn-0.22.zip
+
 unzip vosk-model-cn-0.22.zip
+
 mkdir -p models && mv vosk-model-cn-0.22 models/vosk-model
+
 六、项目部署
+
 1. 后端部署
+   
 cd xiaozhi-esp32-server-java
+
 mvn clean package -DskipTests
+
  
 # 启动服务（后台运行）
+
 nohup java -jar target/xiaozhi.server-1.0.jar > server.log 2>&1 &
+
 tail -f server.log  # 观看日志
+
 2. 前端部署
+   
 cd web
+
 npm install --force  # 强制解决依赖冲突
+
 npm run build
+
  
 # 启动开发服务器
+
 nohup npm run dev > frontend.log 2>&1 &
+
 七、访问验证
+
 访问地址：http://[公网IP]:8084
+
 （示例：http://114.132.95.9:8084）
+
 管理员账号：admin / 123456
+
 八、ESP32设备配置
+
 1.配置模型
+
 获取apikey
 
 模型名称:GLM-4-Plus
@@ -126,34 +157,57 @@ nohup npm run dev > frontend.log 2>&1 &
 API URL：https://open.bigmodel.cn/api/paas/v4/
 
 2.修改小智的服务器连接
+
 WebSocket配置
+
 1. 获取WS地址
+   
 tail -f server.log  # 查找类似日志：WebSocket started on ws://0.0.0.0:8091/ws/xiaozhi/v1/
-2. 公网地址转换
+
+3. 公网地址转换
+   
 将内网地址转换为公网地址：
+
  ws://[公网IP]:8091/ws/xiaozhi/v1/
+ 
 （示例：ws://114.132.95.9:8091/ws/xiaozhi/v1/）
+
 # 设置编译目标
+
 idf.py set-target esp32s3
- 
+
 # 配置参数（需修改WS地址 删除OTA 换到WS协议）
+
 idf.py menuconfig
- 
+
 # 编译
+
 idf.py build 
+
 # 烧录
+
 idf.py flash monitor
 
 九、维护操作
+
 1. 日志管理
+   
 tail -f server.log        # 实时查看日志
+
 grep "ERROR" server.log  # 过滤错误日志
-2. 代码更新
+
+3. 代码更新
+   
 git pull origin main
+
 mvn clean package -DskipTests
+
 sudo systemctl restart xiaozhi  # 需配置服务（可选）
-3. 数据库备份
+
+5. 数据库备份
+   
 mysqldump -u root -p xiaozhi > xiaozhi_backup_$(date +%Y%m%d).sql
+
 注意事项
 公网访问：确保云服务器安全组开放 8084 和 8091 端口
 MySQL兼容性：必须使用5.7版本，高版本可能不兼容
