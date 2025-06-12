@@ -3,10 +3,10 @@ SET NAMES utf8mb4;
 SET CHARACTER SET utf8mb4;
 
 -- 创建本地用户并设置密码（使用mysql_native_password插件）
-CREATE USER IF NOT EXISTS 'xiaozhi'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
+CREATE USER IF NOT EXISTS 'xiaozhi'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Happy@2025';
 
 -- 创建远程用户并设置密码（使用mysql_native_password插件）
-CREATE USER IF NOT EXISTS 'xiaozhi'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+CREATE USER IF NOT EXISTS 'xiaozhi'@'%' IDENTIFIED WITH mysql_native_password BY 'Happy@2025';
 
 -- 仅授予本地用户对 xiaozhi 数据库的所有权限
 GRANT ALL PRIVILEGES ON xiaozhi.* TO 'xiaozhi'@'localhost';
