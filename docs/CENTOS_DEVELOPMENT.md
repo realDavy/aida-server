@@ -1,309 +1,129 @@
-# 小智ESP32服务器CentOS部署文档
+# AIDA Server 部署文档
 
 ## 系统要求
 
-- CentOS 7/8（推荐CentOS 8）
-- 最小化安装 + 开发工具（gcc, make等）
-- 至少2GB内存（推荐4GB）
-- 至少10GB磁盘空间
+•	Ubuntu 20.04/22.04 LTS（推荐20.04）
+•	安装模式：最小化安装 + 构建工具
+•	内存：最低2GB（推荐4GB）
+•	存储：至少10GB可用空间
 
-## 1. 环境准备
 
 ### 1.1 安装基础工具
 
-```bash
-sudo yum install -y epel-release
-sudo yum install -y wget curl git vim unzip
-```
+sudo apt update
+sudo apt install -y wget curl git vim unzip build-essential
+
 
 ### 1.2 配置防火墙
 
-```bash
-sudo firewall-cmd --permanent --add-port=8084/tcp
-sudo firewall-cmd --permanent --add-port=8091/tcp
-sudo firewall-cmd --permanent --add-port=3306/tcp
-sudo firewall-cmd --reload
-```
+sudo ufw allow 8084/tcp    # 后端服务端口
+sudo ufw allow 3306/tcp    # MySQL数据库端口
+sudo ufw enable            # 启用防火墙
+sudo ufw status            # 验证端口开放状态
 
-## 2. 安装Java JDK 8
-
-```bash
-sudo yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
-```
-
-验证安装：
-
-```bash
-java -version
-```
-
-## 3. 安装MySQL 5.7
-
-```bash
-sudo yum localinstall -y https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
-sudo yum install -y mysql-community-server
-```
-
-启动MySQL服务：
-
-```bash
-sudo systemctl start mysqld
-sudo systemctl enable mysqld
-```
-
-获取临时密码：
-
-```bash
-sudo grep 'temporary password' /var/log/mysqld.log
-```
-
-安全设置：
-
-```bash
-sudo mysql_secure_installation
-```
-
-## 4. 安装Maven
-
-```bash
-sudo yum install -y maven
-```
-
-验证安装：
-
-```bash
-mvn -v
-```
-
-## 5. 安装Node.js 16
-
-```bash
-curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
-sudo yum install -y nodejs
-```
-
-验证安装：
-
-```bash
-node -v
-npm -v
-```
-
-## 6. 安装FFmpeg
-
-```bash
-sudo yum install -y ffmpeg ffmpeg-devel
-```
-
-验证安装：
-
-```bash
-ffmpeg -version
-```
-
-## 7. 数据库配置
-
-创建数据库和用户：
-
-```sql
+3. 获取项目代码
+#可以从github拉不下来 可以用gitee
+git clone https://github.com/realDvy/aida-server.git
+git clone https://gitee.com/joey-zhou/xiaozhi-esp32-server-java.git
+三、核心服务安装
+1. MySQL 5.7安装
+# 添加MySQL官方仓库
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+ 
+# 安装时选择5.7版本（在交互界面中选择）
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
+sudo apt update
+sudo apt install -y mysql-server=5.7.* mysql-client=5.7.*
+ 
+# 启动服务
+sudo systemctl start mysql
+sudo systemctl enable mysql
+2. Maven安装
+sudo apt install -y maven
+mvn -v  # 验证版本（需显示3.6+）
+3. Node.js 16安装
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt install -y nodejs
+node -v && npm -v  # 验证版本（需显示v16.x）
+4. FFmpeg安装
+sudo apt install -y ffmpeg
+ffmpeg -version  # 验证安装
+四、数据库配置
+1. 创建数据库用户
+-- 登录MySQL
 mysql -u root -p
+-- 执行以下SQL命令
 CREATE DATABASE xiaozhi CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'xiaozhi'@'localhost' IDENTIFIED BY '123456';
+CREATE USER 'xiaozhi'@'localhost' IDENTIFIED BY 'Happy@2025';
 GRANT ALL PRIVILEGES ON xiaozhi.* TO 'xiaozhi'@'localhost';
 FLUSH PRIVILEGES;
-exit
-```
-
-导入初始化脚本：
-
-```bash
-mysql -u root -p xiaozhi < db/init.sql
-```
-
-## 8. 下载Vosk语音识别模型
-
-```bash
+exit;
+2. 导入初始化数据
+cd xiaozhi-esp32-server-java
+mysql -u root -p xiaozhi < db/init.sql  # 输入root密码
+五、语音模型部署
+cd xiaozhi-esp32-server-java
 wget https://alphacephei.com/vosk/models/vosk-model-cn-0.22.zip
 unzip vosk-model-cn-0.22.zip
-mkdir -p models
-mv vosk-model-cn-0.22 models/vosk-model
-```
-
-## 9. 项目部署
-
-### 9.1 克隆项目
-
-```bash
-git clone https://github.com/joey-zhou/xiaozhi-esp32-server-java
+mkdir -p models && mv vosk-model-cn-0.22 models/vosk-model
+六、项目部署
+1. 后端部署
 cd xiaozhi-esp32-server-java
-```
-
-### 9.2 后端部署
-
-```bash
 mvn clean package -DskipTests
-java -jar target/xiaozhi.server-1.0.jar &
-```
-
-### 9.3 前端部署
-
-```bash
+ 
+# 启动服务（后台运行）
+nohup java -jar target/xiaozhi.server-1.0.jar > server.log 2>&1 &
+tail -f server.log  # 观看日志
+2. 前端部署
 cd web
-npm install
+npm install --force  # 强制解决依赖冲突
 npm run build
-```
+ 
+# 启动开发服务器
+nohup npm run dev > frontend.log 2>&1 &
+七、访问验证
+访问地址：http://[公网IP]:8084
+（示例：http://114.132.95.9:8084）
+管理员账号：admin / 123456
+八、ESP32设备配置
+1.配置模型
+获取apikey
 
-## 10. 配置系统服务（可选）
+模型名称:GLM-4-Plus
 
-### 10.1 创建后端服务
+API URL：https://open.bigmodel.cn/api/paas/v4/
 
-编辑服务文件：
+2.修改小智的服务器连接
+WebSocket配置
+1. 获取WS地址
+tail -f server.log  # 查找类似日志：WebSocket started on ws://0.0.0.0:8091/ws/xiaozhi/v1/
+2. 公网地址转换
+将内网地址转换为公网地址：
+ ws://[公网IP]:8091/ws/xiaozhi/v1/
+（示例：ws://114.132.95.9:8091/ws/xiaozhi/v1/）
+# 设置编译目标
+idf.py set-target esp32s3
+ 
+# 配置参数（需修改WS地址 删除OTA 换到WS协议）
+idf.py menuconfig
+ 
+# 编译
+idf.py build 
+# 烧录
+idf.py flash monitor
 
-```bash
-sudo vim /etc/systemd/system/xiaozhi.service
-```
-
-添加内容：
-
-```
-[Unit]
-Description=Xiaozhi ESP32 Server
-After=syslog.target network.target
-
-[Service]
-User=root
-WorkingDirectory=/path/to/xiaozhi-esp32-server-java
-ExecStart=/usr/bin/java -jar target/xiaozhi.server-1.0.jar
-SuccessExitStatus=143
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-```
-
-启动服务：
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl start xiaozhi
-sudo systemctl enable xiaozhi
-```
-
-### 10.2 配置Nginx（可选）
-
-```bash
-sudo yum install -y nginx
-sudo vim /etc/nginx/conf.d/xiaozhi.conf
-```
-
-添加配置：
-
-```
-server {
-    listen 80;
-    server_name your_domain_or_ip;
-
-    location / {
-        root /path/to/xiaozhi-esp32-server-java/web/dist;
-        try_files $uri $uri/ /index.html;
-    }
-
-    location /api {
-        proxy_pass http://localhost:8091;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-启动Nginx：
-
-```bash
-sudo systemctl start nginx
-sudo systemctl enable nginx
-```
-
-## 11. 访问系统
-
-- 直接访问：`http://your_server_ip:8084`
-- 如果配置了Nginx：`http://your_domain_or_ip`
-- 默认管理员账号：admin/123456
-
-## 常见问题解决
-
-1. **MySQL初始化失败**
-
-   ```bash
-   sudo systemctl restart mysqld
-   mysql_upgrade -u root -p
-   ```
-
-2. **端口冲突**
-
-   ```bash
-   netstat -tulnp | grep 8084
-   kill -9 <PID>
-   ```
-
-3. **Node.js版本问题**
-
-   ```bash
-   sudo yum remove -y nodejs npm
-   curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-   sudo yum install -y nodejs
-   ```
-
-4. **内存不足**
-
-   增加swap空间：
-
-   ```bash
-   sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
-   sudo mkswap /swapfile
-   sudo swapon /swapfile
-   echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
-   ```
-
-5. **Vosk模型加载失败**
-
-   ```bash
-   chmod -R 755 models
-   ```
-
-## 维护命令
-
-- 查看后端日志：
-
-  ```bash
-  journalctl -u xiaozhi -f
-  ```
-
-- 更新代码：
-
-  ```bash
-  git pull origin master
-  mvn clean package -DskipTests
-  sudo systemctl restart xiaozhi
-  ```
-
-- 数据库备份：
-
-  ```bash
-  mysqldump -u root -p xiaozhi > xiaozhi_backup_$(date +%Y%m%d).sql
-  ```
-
-## 注意事项
-
-1. **生产环境建议：**
-   - 修改默认密码
-   - 配置HTTPS
-   - 定期备份数据库
-
-2. **性能优化：**
-
-   增加JVM内存：
-
-   ```bash
-   java -Xms512m -Xmx1024m -jar target/xiaozhi.server-1.0.jar
-   ```
+九、维护操作
+1. 日志管理
+tail -f server.log        # 实时查看日志
+grep "ERROR" server.log  # 过滤错误日志
+2. 代码更新
+git pull origin main
+mvn clean package -DskipTests
+sudo systemctl restart xiaozhi  # 需配置服务（可选）
+3. 数据库备份
+mysqldump -u root -p xiaozhi > xiaozhi_backup_$(date +%Y%m%d).sql
+注意事项
+公网访问：确保云服务器安全组开放 8084 和 8091 端口
+MySQL兼容性：必须使用5.7版本，高版本可能不兼容
+语音模型路径：确保 models/vosk-model 目录存在且包含模型文件
