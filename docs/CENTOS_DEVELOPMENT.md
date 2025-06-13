@@ -53,7 +53,7 @@ git clone https://gitee.com/joey-zhou/xiaozhi-esp32-server-java.git
 
 运行以下命令下载并安装 MySQL 的 APT 配置工具：
 
-wget https://dev.mysql.com/get/mysql-apt-config_0.8.24-1_all.deb
+wget https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
 
 sudo dpkg -i mysql-apt-config_0.8.24-1_all.deb
 
