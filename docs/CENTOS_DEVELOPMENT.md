@@ -17,7 +17,7 @@ sudo apt update
 
 sudo apt install -y wget curl git vim unzip build-essential
 
-安装支持 Java 21 的 JDK
+安装支持 Java 8 的 JDK
 
 sudo apt install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
 
