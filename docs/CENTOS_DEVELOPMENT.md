@@ -19,7 +19,7 @@ sudo apt install -y wget curl git vim unzip build-essential
 
 安装支持 Java 8 的 JDK
 
-sudo apt install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
+sudo apt-get update && sudo apt-get install -y openjdk-8-jdk openjdk-8-jdk-headless
 
 配置 Maven 使用正确的 JDK
 
