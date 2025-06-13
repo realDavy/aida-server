@@ -22,7 +22,7 @@ sudo apt install -y wget curl git vim unzip build-essential
 sudo apt install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
 配置 Maven 使用正确的 JDK
 
-即使安装了 JDK 21，Maven 可能仍然使用旧版本的 JDK。您可以通过以下方式确保 Maven 使用正确的 JDK：
+即使安装了 JDK 8，Maven 可能仍然使用旧版本的 JDK。您可以通过以下方式确保 Maven 使用正确的 JDK：
 
 设置 JAVA_HOME
 
