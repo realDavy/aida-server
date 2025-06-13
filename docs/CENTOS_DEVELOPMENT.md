@@ -55,7 +55,7 @@ git clone https://gitee.com/joey-zhou/xiaozhi-esp32-server-java.git
 
 wget https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
 
-sudo dpkg -i mysql-apt-config_0.8.24-1_all.deb
+sudo dpkg -i mysql57-community-release-el7-11.noarch.rpm
 
 2.选择 MySQL 版本
 
