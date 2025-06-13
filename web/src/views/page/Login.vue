@@ -94,7 +94,7 @@
               <a-divider style="margin-top: 25px; margin-bottom: 15px;" />
               
               <a-typography-paragraph class="login-footer">
-                © {{ new Date().getFullYear() }} 小智ESP32物联网平台
+                © {{ new Date().getFullYear() }} AIDA智能物联网平台
               </a-typography-paragraph>
             </a-col>
           </a-row>
